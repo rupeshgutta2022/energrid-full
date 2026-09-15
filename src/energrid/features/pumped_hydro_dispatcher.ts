@@ -21,3 +21,24 @@ export function calculatepumpedhydrodispatcherMetric(input: number, factor: numb
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class pumpedhydrodispatcherEngine {
+  private history: IpumpedhydrodispatcherTelemetry[] = [];
+
+  constructor(public config: IpumpedhydrodispatcherConfig) {}
+
+  public recordTelemetry(value: number): IpumpedhydrodispatcherTelemetry {
+    const sample: IpumpedhydrodispatcherTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatepumpedhydrodispatcherMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "pumped_hydro_dispatcher" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IpumpedhydrodispatcherTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
