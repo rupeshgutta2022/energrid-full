@@ -21,3 +21,24 @@ export function calculategeomagneticinducedcurrentMetric(input: number, factor: 
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class geomagneticinducedcurrentEngine {
+  private history: IgeomagneticinducedcurrentTelemetry[] = [];
+
+  constructor(public config: IgeomagneticinducedcurrentConfig) {}
+
+  public recordTelemetry(value: number): IgeomagneticinducedcurrentTelemetry {
+    const sample: IgeomagneticinducedcurrentTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculategeomagneticinducedcurrentMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "geomagnetic_induced_current" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IgeomagneticinducedcurrentTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
