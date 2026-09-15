@@ -21,3 +21,24 @@ export function calculateinverterfaultridethroughMetric(input: number, factor: n
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class inverterfaultridethroughEngine {
+  private history: IinverterfaultridethroughTelemetry[] = [];
+
+  constructor(public config: IinverterfaultridethroughConfig) {}
+
+  public recordTelemetry(value: number): IinverterfaultridethroughTelemetry {
+    const sample: IinverterfaultridethroughTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculateinverterfaultridethroughMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "inverter_fault_ride_through" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IinverterfaultridethroughTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
