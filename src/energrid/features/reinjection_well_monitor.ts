@@ -21,3 +21,24 @@ export function calculatereinjectionwellmonitorMetric(input: number, factor: num
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class reinjectionwellmonitorEngine {
+  private history: IreinjectionwellmonitorTelemetry[] = [];
+
+  constructor(public config: IreinjectionwellmonitorConfig) {}
+
+  public recordTelemetry(value: number): IreinjectionwellmonitorTelemetry {
+    const sample: IreinjectionwellmonitorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatereinjectionwellmonitorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "reinjection_well_monitor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IreinjectionwellmonitorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
