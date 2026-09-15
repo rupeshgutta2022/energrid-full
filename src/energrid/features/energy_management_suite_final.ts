@@ -21,3 +21,24 @@ export function calculateenergymanagementsuitefinalMetric(input: number, factor:
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class energymanagementsuitefinalEngine {
+  private history: IenergymanagementsuitefinalTelemetry[] = [];
+
+  constructor(public config: IenergymanagementsuitefinalConfig) {}
+
+  public recordTelemetry(value: number): IenergymanagementsuitefinalTelemetry {
+    const sample: IenergymanagementsuitefinalTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculateenergymanagementsuitefinalMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "energy_management_suite_final" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IenergymanagementsuitefinalTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
