@@ -21,3 +21,24 @@ export function calculatesubstationthermalmonitorMetric(input: number, factor: n
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class substationthermalmonitorEngine {
+  private history: IsubstationthermalmonitorTelemetry[] = [];
+
+  constructor(public config: IsubstationthermalmonitorConfig) {}
+
+  public recordTelemetry(value: number): IsubstationthermalmonitorTelemetry {
+    const sample: IsubstationthermalmonitorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesubstationthermalmonitorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "substation_thermal_monitor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsubstationthermalmonitorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
