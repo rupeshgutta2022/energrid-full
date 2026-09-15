@@ -21,3 +21,24 @@ export function calculatevarcompensatorMetric(input: number, factor: number = 1.
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class varcompensatorEngine {
+  private history: IvarcompensatorTelemetry[] = [];
+
+  constructor(public config: IvarcompensatorConfig) {}
+
+  public recordTelemetry(value: number): IvarcompensatorTelemetry {
+    const sample: IvarcompensatorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatevarcompensatorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "var_compensator" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IvarcompensatorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
