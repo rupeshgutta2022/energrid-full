@@ -21,3 +21,24 @@ export function calculategasturbineheatrateMetric(input: number, factor: number 
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class gasturbineheatrateEngine {
+  private history: IgasturbineheatrateTelemetry[] = [];
+
+  constructor(public config: IgasturbineheatrateConfig) {}
+
+  public recordTelemetry(value: number): IgasturbineheatrateTelemetry {
+    const sample: IgasturbineheatrateTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculategasturbineheatrateMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "gas_turbine_heat_rate" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IgasturbineheatrateTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
