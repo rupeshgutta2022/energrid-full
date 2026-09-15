@@ -21,3 +21,24 @@ export function calculatetransformercoolingbankMetric(input: number, factor: num
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class transformercoolingbankEngine {
+  private history: ItransformercoolingbankTelemetry[] = [];
+
+  constructor(public config: ItransformercoolingbankConfig) {}
+
+  public recordTelemetry(value: number): ItransformercoolingbankTelemetry {
+    const sample: ItransformercoolingbankTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatetransformercoolingbankMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "transformer_cooling_bank" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): ItransformercoolingbankTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
