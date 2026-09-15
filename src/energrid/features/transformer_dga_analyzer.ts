@@ -21,3 +21,24 @@ export function calculatetransformerdgaanalyzerMetric(input: number, factor: num
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class transformerdgaanalyzerEngine {
+  private history: ItransformerdgaanalyzerTelemetry[] = [];
+
+  constructor(public config: ItransformerdgaanalyzerConfig) {}
+
+  public recordTelemetry(value: number): ItransformerdgaanalyzerTelemetry {
+    const sample: ItransformerdgaanalyzerTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatetransformerdgaanalyzerMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "transformer_dga_analyzer" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): ItransformerdgaanalyzerTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
