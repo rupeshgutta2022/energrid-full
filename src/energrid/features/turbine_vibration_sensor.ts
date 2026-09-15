@@ -21,3 +21,24 @@ export function calculateturbinevibrationsensorMetric(input: number, factor: num
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class turbinevibrationsensorEngine {
+  private history: IturbinevibrationsensorTelemetry[] = [];
+
+  constructor(public config: IturbinevibrationsensorConfig) {}
+
+  public recordTelemetry(value: number): IturbinevibrationsensorTelemetry {
+    const sample: IturbinevibrationsensorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculateturbinevibrationsensorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "turbine_vibration_sensor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IturbinevibrationsensorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
