@@ -21,3 +21,24 @@ export function calculatedemandresponseshaverMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class demandresponseshaverEngine {
+  private history: IdemandresponseshaverTelemetry[] = [];
+
+  constructor(public config: IdemandresponseshaverConfig) {}
+
+  public recordTelemetry(value: number): IdemandresponseshaverTelemetry {
+    const sample: IdemandresponseshaverTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatedemandresponseshaverMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "demand_response_shaver" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IdemandresponseshaverTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
