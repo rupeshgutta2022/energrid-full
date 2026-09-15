@@ -21,3 +21,24 @@ export function calculatescadatelemetryingestMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class scadatelemetryingestEngine {
+  private history: IscadatelemetryingestTelemetry[] = [];
+
+  constructor(public config: IscadatelemetryingestConfig) {}
+
+  public recordTelemetry(value: number): IscadatelemetryingestTelemetry {
+    const sample: IscadatelemetryingestTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatescadatelemetryingestMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "scada_telemetry_ingest" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IscadatelemetryingestTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
