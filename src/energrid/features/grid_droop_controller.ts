@@ -21,3 +21,24 @@ export function calculategriddroopcontrollerMetric(input: number, factor: number
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class griddroopcontrollerEngine {
+  private history: IgriddroopcontrollerTelemetry[] = [];
+
+  constructor(public config: IgriddroopcontrollerConfig) {}
+
+  public recordTelemetry(value: number): IgriddroopcontrollerTelemetry {
+    const sample: IgriddroopcontrollerTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculategriddroopcontrollerMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "grid_droop_controller" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IgriddroopcontrollerTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
