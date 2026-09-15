@@ -21,3 +21,24 @@ export function calculatewaveenergyptoMetric(input: number, factor: number = 1.0
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class waveenergyptoEngine {
+  private history: IwaveenergyptoTelemetry[] = [];
+
+  constructor(public config: IwaveenergyptoConfig) {}
+
+  public recordTelemetry(value: number): IwaveenergyptoTelemetry {
+    const sample: IwaveenergyptoTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatewaveenergyptoMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "wave_energy_pto" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IwaveenergyptoTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
