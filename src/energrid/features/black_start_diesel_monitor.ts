@@ -21,3 +21,24 @@ export function calculateblackstartdieselmonitorMetric(input: number, factor: nu
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class blackstartdieselmonitorEngine {
+  private history: IblackstartdieselmonitorTelemetry[] = [];
+
+  constructor(public config: IblackstartdieselmonitorConfig) {}
+
+  public recordTelemetry(value: number): IblackstartdieselmonitorTelemetry {
+    const sample: IblackstartdieselmonitorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculateblackstartdieselmonitorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "black_start_diesel_monitor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IblackstartdieselmonitorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
