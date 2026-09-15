@@ -21,3 +21,24 @@ export function calculatesurgearrestermonitorMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class surgearrestermonitorEngine {
+  private history: IsurgearrestermonitorTelemetry[] = [];
+
+  constructor(public config: IsurgearrestermonitorConfig) {}
+
+  public recordTelemetry(value: number): IsurgearrestermonitorTelemetry {
+    const sample: IsurgearrestermonitorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesurgearrestermonitorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "surge_arrester_monitor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsurgearrestermonitorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
