@@ -21,3 +21,24 @@ export function calculatecathodicprotectionmonitorMetric(input: number, factor: 
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class cathodicprotectionmonitorEngine {
+  private history: IcathodicprotectionmonitorTelemetry[] = [];
+
+  constructor(public config: IcathodicprotectionmonitorConfig) {}
+
+  public recordTelemetry(value: number): IcathodicprotectionmonitorTelemetry {
+    const sample: IcathodicprotectionmonitorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatecathodicprotectionmonitorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "cathodic_protection_monitor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IcathodicprotectionmonitorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
