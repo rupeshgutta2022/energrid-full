@@ -21,3 +21,24 @@ export function calculaterelaycoordinationcurveMetric(input: number, factor: num
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class relaycoordinationcurveEngine {
+  private history: IrelaycoordinationcurveTelemetry[] = [];
+
+  constructor(public config: IrelaycoordinationcurveConfig) {}
+
+  public recordTelemetry(value: number): IrelaycoordinationcurveTelemetry {
+    const sample: IrelaycoordinationcurveTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculaterelaycoordinationcurveMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "relay_coordination_curve" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IrelaycoordinationcurveTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
