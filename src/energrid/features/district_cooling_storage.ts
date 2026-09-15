@@ -21,3 +21,24 @@ export function calculatedistrictcoolingstorageMetric(input: number, factor: num
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class districtcoolingstorageEngine {
+  private history: IdistrictcoolingstorageTelemetry[] = [];
+
+  constructor(public config: IdistrictcoolingstorageConfig) {}
+
+  public recordTelemetry(value: number): IdistrictcoolingstorageTelemetry {
+    const sample: IdistrictcoolingstorageTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatedistrictcoolingstorageMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "district_cooling_storage" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IdistrictcoolingstorageTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
