@@ -21,3 +21,24 @@ export function calculatefeedintariffsettlementMetric(input: number, factor: num
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class feedintariffsettlementEngine {
+  private history: IfeedintariffsettlementTelemetry[] = [];
+
+  constructor(public config: IfeedintariffsettlementConfig) {}
+
+  public recordTelemetry(value: number): IfeedintariffsettlementTelemetry {
+    const sample: IfeedintariffsettlementTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatefeedintariffsettlementMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "feed_in_tariff_settlement" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IfeedintariffsettlementTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
