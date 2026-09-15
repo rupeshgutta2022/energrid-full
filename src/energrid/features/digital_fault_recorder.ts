@@ -21,3 +21,24 @@ export function calculatedigitalfaultrecorderMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class digitalfaultrecorderEngine {
+  private history: IdigitalfaultrecorderTelemetry[] = [];
+
+  constructor(public config: IdigitalfaultrecorderConfig) {}
+
+  public recordTelemetry(value: number): IdigitalfaultrecorderTelemetry {
+    const sample: IdigitalfaultrecorderTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatedigitalfaultrecorderMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "digital_fault_recorder" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IdigitalfaultrecorderTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
