@@ -21,3 +21,24 @@ export function calculateconductorclearanceradarMetric(input: number, factor: nu
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class conductorclearanceradarEngine {
+  private history: IconductorclearanceradarTelemetry[] = [];
+
+  constructor(public config: IconductorclearanceradarConfig) {}
+
+  public recordTelemetry(value: number): IconductorclearanceradarTelemetry {
+    const sample: IconductorclearanceradarTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculateconductorclearanceradarMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "conductor_clearance_radar" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IconductorclearanceradarTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
