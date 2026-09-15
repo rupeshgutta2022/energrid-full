@@ -21,3 +21,24 @@ export function calculatesolaryieldcalculatorMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class solaryieldcalculatorEngine {
+  private history: IsolaryieldcalculatorTelemetry[] = [];
+
+  constructor(public config: IsolaryieldcalculatorConfig) {}
+
+  public recordTelemetry(value: number): IsolaryieldcalculatorTelemetry {
+    const sample: IsolaryieldcalculatorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesolaryieldcalculatorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "solar_yield_calculator" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsolaryieldcalculatorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
