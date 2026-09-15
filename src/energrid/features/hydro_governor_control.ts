@@ -21,3 +21,24 @@ export function calculatehydrogovernorcontrolMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class hydrogovernorcontrolEngine {
+  private history: IhydrogovernorcontrolTelemetry[] = [];
+
+  constructor(public config: IhydrogovernorcontrolConfig) {}
+
+  public recordTelemetry(value: number): IhydrogovernorcontrolTelemetry {
+    const sample: IhydrogovernorcontrolTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatehydrogovernorcontrolMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "hydro_governor_control" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IhydrogovernorcontrolTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
