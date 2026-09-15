@@ -21,3 +21,24 @@ export function calculatetransmissionsagmonitorMetric(input: number, factor: num
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class transmissionsagmonitorEngine {
+  private history: ItransmissionsagmonitorTelemetry[] = [];
+
+  constructor(public config: ItransmissionsagmonitorConfig) {}
+
+  public recordTelemetry(value: number): ItransmissionsagmonitorTelemetry {
+    const sample: ItransmissionsagmonitorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatetransmissionsagmonitorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "transmission_sag_monitor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): ItransmissionsagmonitorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
