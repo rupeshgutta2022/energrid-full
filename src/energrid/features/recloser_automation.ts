@@ -21,3 +21,24 @@ export function calculaterecloserautomationMetric(input: number, factor: number 
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class recloserautomationEngine {
+  private history: IrecloserautomationTelemetry[] = [];
+
+  constructor(public config: IrecloserautomationConfig) {}
+
+  public recordTelemetry(value: number): IrecloserautomationTelemetry {
+    const sample: IrecloserautomationTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculaterecloserautomationMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "recloser_automation" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IrecloserautomationTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
