@@ -21,3 +21,24 @@ export function calculatesynchrophasormonitorMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class synchrophasormonitorEngine {
+  private history: IsynchrophasormonitorTelemetry[] = [];
+
+  constructor(public config: IsynchrophasormonitorConfig) {}
+
+  public recordTelemetry(value: number): IsynchrophasormonitorTelemetry {
+    const sample: IsynchrophasormonitorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesynchrophasormonitorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "synchrophasor_monitor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsynchrophasormonitorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
