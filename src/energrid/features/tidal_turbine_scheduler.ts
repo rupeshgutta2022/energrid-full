@@ -21,3 +21,24 @@ export function calculatetidalturbineschedulerMetric(input: number, factor: numb
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class tidalturbineschedulerEngine {
+  private history: ItidalturbineschedulerTelemetry[] = [];
+
+  constructor(public config: ItidalturbineschedulerConfig) {}
+
+  public recordTelemetry(value: number): ItidalturbineschedulerTelemetry {
+    const sample: ItidalturbineschedulerTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatetidalturbineschedulerMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "tidal_turbine_scheduler" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): ItidalturbineschedulerTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
