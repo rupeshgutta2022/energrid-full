@@ -21,3 +21,24 @@ export function calculatesolarcurtailmentallocatorMetric(input: number, factor: 
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class solarcurtailmentallocatorEngine {
+  private history: IsolarcurtailmentallocatorTelemetry[] = [];
+
+  constructor(public config: IsolarcurtailmentallocatorConfig) {}
+
+  public recordTelemetry(value: number): IsolarcurtailmentallocatorTelemetry {
+    const sample: IsolarcurtailmentallocatorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesolarcurtailmentallocatorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "solar_curtailment_allocator" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsolarcurtailmentallocatorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
