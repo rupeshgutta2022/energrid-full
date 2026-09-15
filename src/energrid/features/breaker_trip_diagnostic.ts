@@ -21,3 +21,24 @@ export function calculatebreakertripdiagnosticMetric(input: number, factor: numb
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class breakertripdiagnosticEngine {
+  private history: IbreakertripdiagnosticTelemetry[] = [];
+
+  constructor(public config: IbreakertripdiagnosticConfig) {}
+
+  public recordTelemetry(value: number): IbreakertripdiagnosticTelemetry {
+    const sample: IbreakertripdiagnosticTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatebreakertripdiagnosticMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "breaker_trip_diagnostic" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IbreakertripdiagnosticTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
