@@ -21,3 +21,24 @@ export function calculateneutralgroundingmonitorMetric(input: number, factor: nu
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class neutralgroundingmonitorEngine {
+  private history: IneutralgroundingmonitorTelemetry[] = [];
+
+  constructor(public config: IneutralgroundingmonitorConfig) {}
+
+  public recordTelemetry(value: number): IneutralgroundingmonitorTelemetry {
+    const sample: IneutralgroundingmonitorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculateneutralgroundingmonitorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "neutral_grounding_monitor" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IneutralgroundingmonitorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
