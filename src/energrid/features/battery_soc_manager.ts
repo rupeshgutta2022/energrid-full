@@ -21,3 +21,24 @@ export function calculatebatterysocmanagerMetric(input: number, factor: number =
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class batterysocmanagerEngine {
+  private history: IbatterysocmanagerTelemetry[] = [];
+
+  constructor(public config: IbatterysocmanagerConfig) {}
+
+  public recordTelemetry(value: number): IbatterysocmanagerTelemetry {
+    const sample: IbatterysocmanagerTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatebatterysocmanagerMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "battery_soc_manager" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IbatterysocmanagerTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
