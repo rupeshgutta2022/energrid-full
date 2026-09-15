@@ -21,3 +21,24 @@ export function calculateinvertervoltvarcurveMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class invertervoltvarcurveEngine {
+  private history: IinvertervoltvarcurveTelemetry[] = [];
+
+  constructor(public config: IinvertervoltvarcurveConfig) {}
+
+  public recordTelemetry(value: number): IinvertervoltvarcurveTelemetry {
+    const sample: IinvertervoltvarcurveTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculateinvertervoltvarcurveMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "inverter_volt_var_curve" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IinvertervoltvarcurveTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
