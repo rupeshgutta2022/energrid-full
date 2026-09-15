@@ -1,0 +1,6 @@
+{
+  "name": "LogiCore",
+  "description": "Logistico Global Logistic Service & LogiCore Supply Chain OS: featuring public services landing page, instant freight quote estimator, live consignment tracking, and 8 role-specific operations portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

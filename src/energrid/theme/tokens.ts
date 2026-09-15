@@ -1,0 +1,1 @@
+export const energyTokens={layout:{sidebarWidth:264,headerHeight:68,pagePadding:20,maxContentWidth:"none"},colors:{navy:"#111827",canvas:"#f5f7fa",surface:"#fff",border:"#dfe4ea",text:"#172033",muted:"#667085",green:"#16835b",amber:"#b7791f",red:"#c0392b",blue:"#2463a8",purple:"#7657b8"}} as const;

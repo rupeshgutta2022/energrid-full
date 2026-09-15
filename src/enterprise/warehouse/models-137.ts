@@ -1,0 +1,106 @@
+export interface WarehouseRecord {
+  id: string;
+  tenantId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  metadata: Record<string, unknown>;
+}
+
+export type WarehouseState = "draft" | "active" | "paused" | "completed" | "cancelled";
+
+export interface WarehouseFilter {
+  tenantId?: string;
+  status?: WarehouseState;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export const warehouseDefaults = {
+  page: 1,
+  pageSize: 25,
+  maxPageSize: 250,
+  sortBy: "updatedAt",
+  sortDirection: "desc" as const,
+};
+
+export const warehouse_137_0_definition = {
+  domain: "warehouse",
+  sequence: 137,
+  capability: "models",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const warehouse_137_1_definition = {
+  domain: "warehouse",
+  sequence: 138,
+  capability: "models",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const warehouse_137_2_definition = {
+  domain: "warehouse",
+  sequence: 139,
+  capability: "models",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const warehouse_137_3_definition = {
+  domain: "warehouse",
+  sequence: 140,
+  capability: "models",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const warehouse_137_4_definition = {
+  domain: "warehouse",
+  sequence: 141,
+  capability: "models",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const warehouse_137_5_definition = {
+  domain: "warehouse",
+  sequence: 142,
+  capability: "models",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const warehouse_137_6_definition = {
+  domain: "warehouse",
+  sequence: 143,
+  capability: "models",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const warehouse_137_7_definition = {
+  domain: "warehouse",
+  sequence: 144,
+  capability: "models",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};

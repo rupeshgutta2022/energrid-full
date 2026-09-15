@@ -1,0 +1,103 @@
+export interface TransportationPolicyInput {
+  tenantId: string;
+  actorId: string;
+  role: string;
+  action: string;
+  resourceId?: string;
+  attributes?: Record<string, unknown>;
+}
+
+export class TransportationPolicy {
+  private readonly privilegedRoles = new Set(["admin", "manager", "operator"]);
+
+  allows(input: TransportationPolicyInput): boolean {
+    if (!input.tenantId || !input.actorId || !input.action) return false;
+    if (input.role === "admin") return true;
+    if (input.action === "read") return true;
+    return this.privilegedRoles.has(input.role);
+  }
+
+  reason(input: TransportationPolicyInput): string {
+    return this.allows(input) ? "policy-approved" : "policy-denied";
+  }
+}
+
+export const transportation_56_0_definition = {
+  domain: "transportation",
+  sequence: 56,
+  capability: "policy",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const transportation_56_1_definition = {
+  domain: "transportation",
+  sequence: 57,
+  capability: "policy",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const transportation_56_2_definition = {
+  domain: "transportation",
+  sequence: 58,
+  capability: "policy",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const transportation_56_3_definition = {
+  domain: "transportation",
+  sequence: 59,
+  capability: "policy",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const transportation_56_4_definition = {
+  domain: "transportation",
+  sequence: 60,
+  capability: "policy",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const transportation_56_5_definition = {
+  domain: "transportation",
+  sequence: 61,
+  capability: "policy",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const transportation_56_6_definition = {
+  domain: "transportation",
+  sequence: 62,
+  capability: "policy",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};
+
+export const transportation_56_7_definition = {
+  domain: "transportation",
+  sequence: 63,
+  capability: "policy",
+  enabled: true,
+  retryable: true,
+  timeoutMs: 30000,
+  tags: ["production", "enterprise"],
+};

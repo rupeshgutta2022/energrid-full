@@ -1,0 +1,1 @@
+EnerGrid enterprise energy-management product layer added to the supplied 600k+ production codebase. Full-width shell, renewable assets, monitoring, analytics, grid/meter operations, maintenance, alerts, forecasting, billing, responsive UI, Lucide icons, realistic data and humanized operational copy.

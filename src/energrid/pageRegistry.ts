@@ -1,0 +1,1 @@
+export const enerGridRoutes=["Operations Dashboard","Energy Monitoring","Solar Assets","Wind Assets","Grid Management","Meter Management","Consumption Analytics","Forecasting","Maintenance","Alerts & Incidents","Billing","Settings","Users & Roles","Audit Log"] as const;
