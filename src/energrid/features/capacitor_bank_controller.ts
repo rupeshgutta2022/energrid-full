@@ -21,3 +21,24 @@ export function calculatecapacitorbankcontrollerMetric(input: number, factor: nu
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class capacitorbankcontrollerEngine {
+  private history: IcapacitorbankcontrollerTelemetry[] = [];
+
+  constructor(public config: IcapacitorbankcontrollerConfig) {}
+
+  public recordTelemetry(value: number): IcapacitorbankcontrollerTelemetry {
+    const sample: IcapacitorbankcontrollerTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatecapacitorbankcontrollerMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "capacitor_bank_controller" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IcapacitorbankcontrollerTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
