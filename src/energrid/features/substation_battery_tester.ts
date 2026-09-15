@@ -21,3 +21,24 @@ export function calculatesubstationbatterytesterMetric(input: number, factor: nu
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class substationbatterytesterEngine {
+  private history: IsubstationbatterytesterTelemetry[] = [];
+
+  constructor(public config: IsubstationbatterytesterConfig) {}
+
+  public recordTelemetry(value: number): IsubstationbatterytesterTelemetry {
+    const sample: IsubstationbatterytesterTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesubstationbatterytesterMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "substation_battery_tester" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsubstationbatterytesterTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
