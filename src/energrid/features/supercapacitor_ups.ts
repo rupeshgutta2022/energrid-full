@@ -21,3 +21,24 @@ export function calculatesupercapacitorupsMetric(input: number, factor: number =
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class supercapacitorupsEngine {
+  private history: IsupercapacitorupsTelemetry[] = [];
+
+  constructor(public config: IsupercapacitorupsConfig) {}
+
+  public recordTelemetry(value: number): IsupercapacitorupsTelemetry {
+    const sample: IsupercapacitorupsTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesupercapacitorupsMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "supercapacitor_ups" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsupercapacitorupsTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
