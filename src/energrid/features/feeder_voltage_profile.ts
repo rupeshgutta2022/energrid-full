@@ -21,3 +21,24 @@ export function calculatefeedervoltageprofileMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class feedervoltageprofileEngine {
+  private history: IfeedervoltageprofileTelemetry[] = [];
+
+  constructor(public config: IfeedervoltageprofileConfig) {}
+
+  public recordTelemetry(value: number): IfeedervoltageprofileTelemetry {
+    const sample: IfeedervoltageprofileTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatefeedervoltageprofileMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "feeder_voltage_profile" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IfeedervoltageprofileTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
