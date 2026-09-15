@@ -21,3 +21,24 @@ export function calculatedistrictheatingflowMetric(input: number, factor: number
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class districtheatingflowEngine {
+  private history: IdistrictheatingflowTelemetry[] = [];
+
+  constructor(public config: IdistrictheatingflowConfig) {}
+
+  public recordTelemetry(value: number): IdistrictheatingflowTelemetry {
+    const sample: IdistrictheatingflowTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatedistrictheatingflowMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "district_heating_flow" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IdistrictheatingflowTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
