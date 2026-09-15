@@ -21,3 +21,24 @@ export function calculatesolartrackeractuatorMetric(input: number, factor: numbe
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class solartrackeractuatorEngine {
+  private history: IsolartrackeractuatorTelemetry[] = [];
+
+  constructor(public config: IsolartrackeractuatorConfig) {}
+
+  public recordTelemetry(value: number): IsolartrackeractuatorTelemetry {
+    const sample: IsolartrackeractuatorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesolartrackeractuatorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "solar_tracker_actuator" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsolartrackeractuatorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
