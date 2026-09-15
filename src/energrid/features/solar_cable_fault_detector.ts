@@ -21,3 +21,24 @@ export function calculatesolarcablefaultdetectorMetric(input: number, factor: nu
   if (input < 0) return 0;
   return Number((input * factor).toFixed(4));
 }
+
+export class solarcablefaultdetectorEngine {
+  private history: IsolarcablefaultdetectorTelemetry[] = [];
+
+  constructor(public config: IsolarcablefaultdetectorConfig) {}
+
+  public recordTelemetry(value: number): IsolarcablefaultdetectorTelemetry {
+    const sample: IsolarcablefaultdetectorTelemetry = {
+      timestamp: Date.now(),
+      metricValue: calculatesolarcablefaultdetectorMetric(value),
+      status: value > 90 ? "critical" : value > 70 ? "warning" : "nominal",
+      meta: { subsystem: "solar_cable_fault_detector" }
+    };
+    this.history.push(sample);
+    return sample;
+  }
+
+  public getRecentTelemetry(): IsolarcablefaultdetectorTelemetry[] {
+    return this.history.slice(-50);
+  }
+}
